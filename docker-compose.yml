@@ -1,0 +1,62 @@
+services:
+    roach1:
+        image: cockroachdb/cockroach:latest
+        container_name: roach1
+        hostname: roach1
+        command: start --insecure --advertise-addr=roach1 --join=roach1,roach2,roach3,roach4
+        ports:
+            - "26257:26257"
+            - "8080:8080"
+        volumes:
+            - roach1-data:/cockroach/cockroach-data
+        networks:
+            - roachnet
+
+    roach2:
+        image: cockroachdb/cockroach:latest
+        container_name: roach2
+        hostname: roach2
+        command: start --insecure --advertise-addr=roach2 --join=roach1,roach2,roach3,roach4
+        ports:
+            - "26258:26257"
+            - "8081:8080"
+        volumes:
+            - roach2-data:/cockroach/cockroach-data
+        networks:
+            - roachnet
+
+    roach3:
+        image: cockroachdb/cockroach:latest
+        container_name: roach3
+        hostname: roach3
+        command: start --insecure --advertise-addr=roach3 --join=roach1,roach2,roach3,roach4
+        ports:
+            - "26259:26257"
+            - "8082:8080"
+        volumes:
+            - roach3-data:/cockroach/cockroach-data
+        networks:
+            - roachnet
+
+    roach4:
+        image: cockroachdb/cockroach:latest
+        container_name: roach4
+        hostname: roach4
+        command: start --insecure --advertise-addr=roach4 --join=roach1,roach2,roach3,roach4
+        ports:
+            - "26260:26257"
+            - "8083:8080"
+        volumes:
+            - roach4-data:/cockroach/cockroach-data
+        networks:
+            - roachnet
+
+networks:
+    roachnet:
+        driver: bridge
+
+volumes:
+    roach1-data:
+    roach2-data:
+    roach3-data:
+    roach4-data:
