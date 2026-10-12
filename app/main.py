@@ -55,3 +55,22 @@ def creer_produit(produit: ProduitIn):
         return {"id": str(produit_id), **produit.dict()}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/catalogue")
+def catalogue():
+    try:
+        conn = get_connection()
+        rows = conn.run("SELECT id, nom, prix, stock, region_stock FROM produits ORDER BY nom")
+        conn.close()
+        return [
+            {
+                "id": str(r[0]),
+                "nom": r[1],
+                "prix": float(r[2]),
+                "stock": r[3],
+                "region_stock": r[4],
+            }
+            for r in rows
+        ]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
